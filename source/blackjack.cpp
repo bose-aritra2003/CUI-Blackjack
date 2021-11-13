@@ -19,9 +19,9 @@ int getCardValue(const Card& card)
         case Rank::seven:   return 7 ;
         case Rank::eight:   return 8 ;
         case Rank::nine :   return 9 ;
-        case Rank::ten  :   return 10;
-        case Rank::jack :   return 10;
-        case Rank::queen:   return 10;
+        case Rank::ten  :
+        case Rank::jack :
+        case Rank::queen:
         case Rank::king :   return 10;
         case Rank::ace  :   return 11;
 
