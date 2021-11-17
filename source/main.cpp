@@ -73,6 +73,9 @@ int main()
     createDeck(deck);
     displayRules();
 
+    std::cout << "\nPress ENTER key to continue...";
+    std::cin.get();
+
     if(getChoiceStartGame())
         goto start_here;
     else

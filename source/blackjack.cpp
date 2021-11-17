@@ -96,6 +96,7 @@ bool playerTurn(const deck_t& deck, Player& player, int& index)
                 printCard(deck[index]);
                 std::cout << '\n';
                 int cardValue{getCardValue(deck[index])};
+                player.deck.push_back(deck[index]); //To store the cards chosen by dealer
 
                 if(cardValue == ace_11)
                 {
@@ -132,6 +133,8 @@ bool dealerTurn(const deck_t& deck, Player& dealer, int& index)
                 printCard(deck[index]);
                 std::cout << '\n';
                 int cardValue{getCardValue(deck[index])};
+                dealer.deck.push_back(deck[index]); //To store the cards chosen by dealer
+
                 if(cardValue == ace_11)
                 {
                     cardValue = (dealer.score > limit_ace) ? ace_1 : ace_11;
@@ -148,7 +151,6 @@ bool dealerTurn(const deck_t& deck, Player& dealer, int& index)
 
 }
 
-
 int playBlackjack(const deck_t& deck)
 {
     int index{0};
@@ -156,13 +158,21 @@ int playBlackjack(const deck_t& deck)
 
     std::cout << "\n=========== Your Turn ===============\n";
     bool player_bust{playerTurn(deck, player, index)};
+    std::cout << "Your deck: ";
+    printDeck(player.deck);
     if(player_bust)
         return 0;   //If player bursts he/she loose immediately
 
     //The following statements execute only if player is not busted
 
+    ignoreLine();
+    std::cout << "\nPress ENTER key to continue to dealer's turn...";
+    std::cin.get();
+
     std::cout << "\n=========== Dealer's Turn ===========\n";
     bool dealer_bust{dealerTurn(deck, dealer, index)};
+    std::cout << "Dealer's deck: ";
+    printDeck(dealer.deck);
 
     if (((player.score < dealer.score) && !dealer_bust))
     {

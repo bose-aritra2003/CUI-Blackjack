@@ -40,6 +40,7 @@ struct Card
 struct Player
 {
     int score{};
+    std::vector<Card> deck{};
 };
 
 using deck_t = std::array<Card, 52>;
@@ -61,5 +62,6 @@ void    shuffleDeck(deck_t& deck);
 void    printCard(const Card& card);
 void    executeGame(const deck_t& deck);
 void    printDeck(const deck_t& deck);
+void    printDeck(const std::vector<Card>& deck);
 
 #endif

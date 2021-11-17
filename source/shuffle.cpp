@@ -73,3 +73,14 @@ void printDeck(const deck_t& deck)
     }
     std::cout << '\n';
 }
+
+//To print the deck of a player
+void printDeck(const std::vector<Card>& deck)
+{
+    for(const auto& element : deck)
+    {
+        printCard(element);
+        std::cout << ' ';
+    }
+    std::cout << '\n';
+}
