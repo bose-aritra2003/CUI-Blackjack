@@ -6,202 +6,189 @@ void ignoreLine()
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-//Get the value of the chosen card according to blackjack rules
-int getCardValue(const Card& card)
-{
-    switch(card.rank)
-    {   //Ace could also have value 1 based on player's choice
-        case Rank::two  :   return 2 ;
-        case Rank::three:   return 3 ;
-        case Rank::four :   return 4 ;
-        case Rank::five :   return 5 ;
-        case Rank::six  :   return 6 ;
-        case Rank::seven:   return 7 ;
-        case Rank::eight:   return 8 ;
-        case Rank::nine :   return 9 ;
-        case Rank::ten  :
-        case Rank::jack :
-        case Rank::queen:
-        case Rank::king :   return 10;
-        case Rank::ace  :   return 11;
-
-        default:
-            assert(false && "\nThis should never happen\n");
-    }
-}
-
 //Check whether player wants to hit or stand
-bool playerWantHit()
+bool playerWantsHit()
 {
     while(true)
     {
         std::cout << "Enter (h) to hit & (s) to stand: ";
         char choice{};
         std::cin >> choice;
-
+        std::cout << '\n';
         switch (choice)
         {
             case 'h':
+                ignoreLine();
                 return true;
             case 's':
+                ignoreLine();
                 return false;
             default:
                 std::cout << "--------------------------------------\n";
                 std::cout << "Invalid choice! Enter choice again. \n";
-                std::cout << "--------------------------------------\n";
+                std::cout << "--------------------------------------\n\n";
                 ignoreLine();
         }
     }
 }
 
 //Add value 1 or 11 according to respective choices when ace gets selected
-bool aceChoice()
+bool aceChoice(const Player& player)
 {
-    while(true)
+    if (player.score() <= g_limit_ace)
     {
-        std::cout << "You got an Ace.\n";
-        std::cout << "Enter (a) to add value 1 and "
-                     "enter (b) to add value 11 to your current score: ";
-        char choice{};
-        std::cin >> choice;
-
-        switch (choice)
+        while(true)
         {
-            case 'a':
-                return true;
-            case 'b':
-                return false;
-            default:
-                std::cout << "--------------------------------------\n";
-                std::cout << "Invalid choice! Enter choice again. \n";
-                std::cout << "--------------------------------------\n";
-                ignoreLine();
+            std::cout << "You got an Ace.\n";
+            std::cout << "Enter (a) to add value 1 and "
+                         "enter (b) to add value 11 to your current score: ";
+            char choice{};
+            std::cin >> choice;
+
+            switch (choice)
+            {
+                case 'a':
+                    ignoreLine();
+                    return true;
+                case 'b':
+                    ignoreLine();
+                    return false;
+                default:
+                    std::cout << "--------------------------------------\n";
+                    std::cout << "Invalid choice! Enter choice again. \n";
+                    std::cout << "--------------------------------------\n\n";
+                    ignoreLine();
+            }
         }
     }
+
+    else
+        return true;
+
 }
 
-bool playerTurn(const deck_t& deck, Player& player, int& index)
+bool limitDealerAce(const Player& dealer)
+{
+    return(dealer.score() > g_limit_ace);
+}
+
+bool playerTurn(Deck& deck, Player& player)
 {
     while (true)
     {
-        if(player.score > maxValue)
+        if(player.isBust())
         {
             std::cout << "You're busted ! \n";
+            std::cout << "Your deck: ";
+            player.printDeck();
             return true; //Player busted
         }
         else
         {
-            if (playerWantHit())
+            if (playerWantsHit())
             {
-                printCard(deck[index]);
+                int playerCardValue{ player.drawCard(deck, g_player, player) };
+
                 std::cout << '\n';
-                int cardValue{getCardValue(deck[index])};
-                player.deck.push_back(deck[index]); //To store the cards chosen by dealer
 
-                if(cardValue == ace_11)
-                {
-                    cardValue = (aceChoice()) ? ace_1 : ace_11;
-                }
-
-                player.score += cardValue;
-                std::cout << "You were dealt a " << cardValue << '\n';
-                std::cout << "Current score: " << player.score << "\n\n";
-                ++index;
+                std::cout << "You were dealt a " << playerCardValue << '\n';
+                std::cout << "Current score: " << player.score() << "\n\n";
             }
 
             else
+            {
+                std::cout << "Your deck: ";
+                player.printDeck();
+
                 return false; //Player wasn't busted
-        }
-    }
-
-}
-
-bool dealerTurn(const deck_t& deck, Player& dealer, int& index)
-{
-    while (true)
-    {
-        if(dealer.score > maxValue)
-        {
-            std::cout << "Dealer busted ! \n";
-            return true; //Dealer busted
-        }
-        else
-        {
-            if (dealer.score < minValue)
-            {
-                sleep(3);
-                printCard(deck[index]);
-                std::cout << '\n';
-                int cardValue{getCardValue(deck[index])};
-                dealer.deck.push_back(deck[index]); //To store the cards chosen by dealer
-
-                if(cardValue == ace_11)
-                {
-                    cardValue = (dealer.score > limit_ace) ? ace_1 : ace_11;
-                }
-                dealer.score += cardValue;
-                std::cout << "Dealer was dealt a " << cardValue << '\n';
-                std::cout << "Dealer's current score: " << dealer.score << "\n\n";
-                ++index;
             }
-            else
-                return false; //Dealer wasn't busted
         }
     }
+}
+
+bool dealerTurn(Deck& deck, Player& dealer)
+{
+
+    while (dealer.score() < g_minScore)
+    {
+        sleep(4);
+        int dealerCardValue{ dealer.drawCard(deck, g_dealer, dealer) };
+        std::cout << '\n';
+        std::cout << "Dealer was dealt a " << dealerCardValue << '\n';
+        std::cout << "Dealer's current score: " << dealer.score() << "\n\n";
+    }
+
+    if(dealer.isBust())
+    {
+        std::cout << "Dealer busted ! \n";
+        std::cout << "Dealer's deck: ";
+        dealer.printDeck();
+        return true; //Dealer busted
+    }
+
+    else
+    {
+        std::cout << "Dealer's deck: ";
+        dealer.printDeck();
+        return false;
+    }
 
 }
 
-int playBlackjack(const deck_t& deck)
+int playGame(Deck& deck)
 {
-    int index{0};
-    Player player, dealer;
 
-    std::cout << "\n=========== Your Turn ===============\n";
-    bool player_bust{playerTurn(deck, player, index)};
-    std::cout << "Your deck: ";
-    printDeck(player.deck);
-    if(player_bust)
-        return 0;   //If player bursts he/she loose immediately
+    std::cout << "\n============= Your Turn =============\n\n";
+    Player player{};
 
-    //The following statements execute only if player is not busted
+    bool player_turn{playerTurn(deck, player)};
+    std::cout << "Your final score: " << player.score() << "\n\n";
 
-    ignoreLine();
-    std::cout << "\nPress ENTER key to continue to dealer's turn...";
-    std::cin.get();
-
-    std::cout << "\n=========== Dealer's Turn ===========\n";
-    bool dealer_bust{dealerTurn(deck, dealer, index)};
-    std::cout << "Dealer's deck: ";
-    printDeck(dealer.deck);
-
-    if (((player.score < dealer.score) && !dealer_bust))
+    if (player_turn)
     {
-        return 0;   //Player loose
-    }
-    else if(player.score == dealer.score)
-    {
-        return 1;   //It's a tie
-    }
-    else if((player.score > dealer.score) || dealer_bust)
-    {
-        return 2;   //Player win
+        return 0;
     }
 
-    return 3; //If any case is missing
+    askEnter();
+
+    std::cout << "\n=========== Dealer's Turn ===========\n\n";
+    Player dealer{};
+
+    bool dealer_turn{dealerTurn(deck, dealer)};
+    std::cout << "Dealer's final score: " << dealer.score() << "\n\n";
+
+    if (dealer_turn)
+    {
+        return 1;
+    }
+
+    if(player.score() > dealer.score())
+        return 1;
+
+    if(player.score() < dealer.score())
+        return 0;
+
+    if(player.score() == dealer.score())
+        return 2;
+
+    return 3;
 }
 
-void executeGame(const deck_t& deck)
+void executeGame()
 {
-    switch (playBlackjack(deck))
+    Deck deck{};
+    deck.shuffle();
+
+    switch (playGame(deck))
     {
         case 0:
             std::cout << "You loose ! \n";
             break;
         case 1:
-            std::cout << "It's a tie ! \n";
+            std::cout << "You win ! \n";
             break;
         case 2:
-            std::cout << "You win ! \n";
+            std::cout << "It's a tie ! \n";
             break;
         case 3: //If any case is missing then error will be shown
             std::cerr << "ERROR! Unknown state. \n";

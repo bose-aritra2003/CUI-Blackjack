@@ -14,54 +14,101 @@
 #include <cassert>
 #include <iostream>
 
-//Type definitions like enums & structs should be in header file in multi-file programs
 
-enum class Rank
+//All the necessary class definitions and type aliases
+
+constexpr int g_ace_1{1};
+constexpr int g_ace_11{11};
+constexpr char g_player{'p'}, g_dealer{'d'};
+constexpr int g_limit_ace{40};
+constexpr int g_maxScore{51};
+constexpr int g_minScore{46};
+
+class Player;
+
+class Card
 {
-    two, three, four, five, six, seven, eight,
-    nine, ten, jack, queen, king, ace,
+public:
 
-    max_ranks
+    enum Suit
+    {
+        clubs, diamonds,hearts, spades,
+
+        max_suits
+    };
+
+    enum Rank
+    {
+        two, three, four, five, six, seven, eight,
+        nine, ten, jack, queen, king, ace,
+
+        max_ranks
+    };
+
+private:
+    Rank m_rank{};
+    Suit m_suit{};
+
+public:
+    Card() = default;
+    Card(Rank rank, Suit suit);
+
+    void print() const;
+    [[nodiscard]] int value() const;
 };
 
-enum class Suit
+class Deck
 {
-    clubs, diamonds,hearts, spades,
+public:
+    using deck_t = std::array<Card, 52>;
+    using index_t = deck_t::size_type;
 
-    max_suits
+private:
+    deck_t m_deck{};
+    index_t m_cardIndex{ 0 };
+
+public:
+    Deck();
+    void shuffle();
+    const Card& dealCard();
+
+    //Friend functions
+    //friend bool playerTurn(Deck& deck, Player& player);
 };
 
-struct Card
-{
-    Rank rank{};
-    Suit suit{};
-};
 
-struct Player
+class Player
 {
-    int score{};
-    std::vector<Card> deck{};
-};
+private:
+    int m_score{};
+    std::vector<Card> m_deck{};
 
-using deck_t = std::array<Card, 52>;
-constexpr int ace_1(1);
-constexpr int ace_11(11);
-constexpr int limit_ace{40};
-constexpr int maxValue{51};
-constexpr int minValue{46};
+public:
+    void putCard(Card card);
+    int  drawCard(Deck& deck, char player_type, Player& dealer);
+    [[nodiscard]] int  score() const;
+    [[nodiscard]] bool isBust() const;
+    void printDeck() const;
+
+
+};
 
 //Forward declarations
-void    ignoreLine();
-int     getCardValue(const Card& card);
-bool    playerWantHit();
-bool    playerTurn(const deck_t& deck, Player& player, int& index);
-bool    dealerTurn(const deck_t& deck, Player& dealer, int& index);
-int     playBlackjack(const deck_t& deck);
-void    createDeck(deck_t& deck);
-void    shuffleDeck(deck_t& deck);
-void    printCard(const Card& card);
-void    executeGame(const deck_t& deck);
-void    printDeck(const deck_t& deck);
-void    printDeck(const std::vector<Card>& deck);
+
+//blackjack.cpp
+void ignoreLine();
+bool playerWantsHit();
+bool aceChoice(const Player& player);
+bool limitDealerAce(const Player& dealer);
+bool playerTurn(Deck& deck, Player& player);
+bool dealerTurn(Deck& deck, Player& dealer);
+int  playGame(Deck& deck);
+void executeGame();
+
+//main.cpp
+bool getChoicePlayAgain();
+bool getChoiceStartGame();
+void displayRules();
+void askEnter();
 
 #endif
