@@ -141,11 +141,13 @@ int Player::drawCard(Deck& deck, Player& player)
     return value;
 }
 
+//Get player's score
 int Player::getScore() const
 {
     return m_score;
 }
 
+//Check whether player is busted
 bool Player::isBust() const
 {
     return (m_score > g_maxScore);
