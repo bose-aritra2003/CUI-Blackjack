@@ -4,23 +4,23 @@
 Card::Card(Rank rank, Suit suit) : m_rank{ rank }, m_suit{ suit } {}
 
 //Print card code of each card e.g., Jack of Spade is coded as JS
-void Card::print() const
+void Card::printCode() const
 {
     switch(m_rank)
     {
-        case two  :   std::cout << '2';   break;
-        case three:   std::cout << '3';   break;
-        case four :   std::cout << '4';   break;
-        case five :   std::cout << '5';   break;
-        case six  :   std::cout << '6';   break;
-        case seven:   std::cout << '7';   break;
-        case eight:   std::cout << '8';   break;
-        case nine :   std::cout << '9';   break;
-        case ten  :   std::cout << 'T';   break;
-        case jack :   std::cout << 'J';   break;
-        case queen:   std::cout << 'Q';   break;
-        case king :   std::cout << 'K';   break;
-        case ace  :   std::cout << 'A';   break;
+        case rank_two  :   std::cout << '2';   break;
+        case rank_three:   std::cout << '3';   break;
+        case rank_four :   std::cout << '4';   break;
+        case rank_five :   std::cout << '5';   break;
+        case rank_six  :   std::cout << '6';   break;
+        case rank_seven:   std::cout << '7';   break;
+        case rank_eight:   std::cout << '8';   break;
+        case rank_nine :   std::cout << '9';   break;
+        case rank_ten  :   std::cout << 'T';   break;
+        case rank_jack :   std::cout << 'J';   break;
+        case rank_queen:   std::cout << 'Q';   break;
+        case rank_king :   std::cout << 'K';   break;
+        case rank_ace  :   std::cout << 'A';   break;
 
         default:
             std::cout << '?';
@@ -29,10 +29,10 @@ void Card::print() const
 
     switch(m_suit)
     {
-        case clubs    :   std::cout << 'C';   break;
-        case diamonds :   std::cout << 'D';   break;
-        case hearts   :   std::cout << 'H';   break;
-        case spades   :   std::cout << 'S';   break;
+        case suit_clubs    :   std::cout << 'C';   break;
+        case suit_diamonds :   std::cout << 'D';   break;
+        case suit_hearts   :   std::cout << 'H';   break;
+        case suit_spades   :   std::cout << 'S';   break;
 
         default:
             std::cout << '?';
@@ -41,23 +41,23 @@ void Card::print() const
 }
 
 //Get the value of the chosen card according to blackjack rules
-int Card::value() const
+int Card::getValue() const
 {
     switch(m_rank)
     {   //Ace could also have value 1 based on player's choice
-        case two  :   return 2 ;
-        case three:   return 3 ;
-        case four :   return 4 ;
-        case five :   return 5 ;
-        case six  :   return 6 ;
-        case seven:   return 7 ;
-        case eight:   return 8 ;
-        case nine :   return 9 ;
-        case ten  :
-        case jack :
-        case queen:
-        case king :   return 10;
-        case ace  :   return 11;
+        case rank_two  :   return 2 ;
+        case rank_three:   return 3 ;
+        case rank_four :   return 4 ;
+        case rank_five :   return 5 ;
+        case rank_six  :   return 6 ;
+        case rank_seven:   return 7 ;
+        case rank_eight:   return 8 ;
+        case rank_nine :   return 9 ;
+        case rank_ten  :
+        case rank_jack :
+        case rank_queen:
+        case rank_king :   return 10;
+        case rank_ace  :   return 11;
 
         default   :   assert(false && "\nThis should never happen\n");
     }
@@ -97,21 +97,35 @@ const Card& Deck::dealCard()
     return m_deck[m_cardIndex++];
 }
 
+//To set the type of player (user or dealer)
+void Player::setType(char type)
+{
+    m_type = type;
+}
+
+//To get the type of player (user or dealer)
+char Player::getType() const
+{
+    return m_type;
+}
+
+//To put the selected card into the player's own deck
 void Player::putCard(Card card)
 {
     m_deck.push_back(card);
 }
 
-int Player::drawCard(Deck& deck, char player_type, Player& player)
+//To get the value of the dealt card
+int Player::drawCard(Deck& deck, Player& player)
 {
     Card card{ deck.dealCard() };
-    int value = card.value();
+    int value = card.getValue();
 
     if(value == g_ace_11)
     {
-        switch(player_type)
+        switch(player.getType())
         {
-            case g_player: value = (aceChoice(player)) ? g_ace_1 : g_ace_11;
+            case g_user  : value = (aceChoice(player)) ? g_ace_1 : g_ace_11;
                            break;
             case g_dealer: value = (limitDealerAce(player)) ? g_ace_1 : g_ace_11;
                            break;
@@ -120,16 +134,14 @@ int Player::drawCard(Deck& deck, char player_type, Player& player)
         }
     }
 
-    card.print();
+    card.printCode();
     player.putCard(card);
 
     m_score += value;
     return value;
 }
 
-
-
-int Player::score() const
+int Player::getScore() const
 {
     return m_score;
 }
@@ -139,12 +151,12 @@ bool Player::isBust() const
     return (m_score > g_maxScore);
 }
 
-//Print the elements in the deck
+//Print the elements in a deck
 void Player::printDeck() const
 {
     for(const Card& card : m_deck)
     {
-        card.print();
+        card.printCode();
         std::cout << ' ';
     }
     std::cout << '\n';

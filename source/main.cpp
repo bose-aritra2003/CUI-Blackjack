@@ -1,6 +1,6 @@
 #include "define.h"
 
-//Whether user wants to ply again or not
+//Whether user wants to play again or not
 bool getChoicePlayAgain()
 {
     while (true)
@@ -21,6 +21,7 @@ bool getChoicePlayAgain()
     }
 }
 
+//Ask the user whether to start the game or not
 bool getChoiceStartGame()
 {
     while (true)
@@ -43,7 +44,7 @@ bool getChoiceStartGame()
     }
 }
 
-//To display the welcome note and the rules of the game
+//To display the welcome note, developer info, rules of the game & reference legend
 void displayRules()
 {
     std::cout << "\n===== Welcome to BLACKJACK-CUI =====\n"
@@ -64,8 +65,7 @@ void displayRules()
                  " * The dealer goes after the player.\n"
                  " * The dealer repeatedly draws cards until they reach a score of 46 or more, at which point they stand.\n"
                  " * If the dealer goes over a score of 51, they bust and the player wins immediately.\n"
-                 " * Otherwise, if the player has a higher score than the dealer, the player wins.\n"
-                 " * Otherwise, the player loses.\n"
+                 " * Otherwise, if the player has a higher score than the dealer, the player wins, vice versa the player loses.\n"
                  " * If the player and dealer have the same score (and the player has not gone bust), the result is a tie and neither wins.\n"
                  "\n============= Legend ===============\n\n"
                  " * A - Ace        T - Ten        J - Jack        Q - Queen        K - King\n"
@@ -73,6 +73,7 @@ void displayRules()
                  "\n====================================\n";
 }
 
+//Ask the user to press enter key to continue
 void askEnter()
 {
     std::cout << "\nPress ENTER key to continue...";

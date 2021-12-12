@@ -19,7 +19,7 @@
 
 constexpr int g_ace_1{1};
 constexpr int g_ace_11{11};
-constexpr char g_player{'p'}, g_dealer{'d'};
+constexpr char g_user{'p'}, g_dealer{'d'};
 constexpr int g_limit_ace{40};
 constexpr int g_maxScore{51};
 constexpr int g_minScore{46};
@@ -32,15 +32,15 @@ public:
 
     enum Suit
     {
-        clubs, diamonds,hearts, spades,
+        suit_clubs, suit_diamonds, suit_hearts, suit_spades,
 
         max_suits
     };
 
     enum Rank
     {
-        two, three, four, five, six, seven, eight,
-        nine, ten, jack, queen, king, ace,
+        rank_two, rank_three, rank_four, rank_five, rank_six, rank_seven, rank_eight,
+        rank_nine, rank_ten, rank_jack, rank_queen, rank_king, rank_ace,
 
         max_ranks
     };
@@ -53,8 +53,9 @@ public:
     Card() = default;
     Card(Rank rank, Suit suit);
 
-    void print() const;
-    [[nodiscard]] int value() const;
+    void printCode() const;
+    [[nodiscard]]
+    int getValue() const;
 };
 
 class Deck
@@ -71,9 +72,6 @@ public:
     Deck();
     void shuffle();
     const Card& dealCard();
-
-    //Friend functions
-    //friend bool playerTurn(Deck& deck, Player& player);
 };
 
 
@@ -81,13 +79,19 @@ class Player
 {
 private:
     int m_score{};
+    char m_type{};
     std::vector<Card> m_deck{};
 
 public:
+    void setType(char type);
+    [[nodiscard]]
+    char getType() const;
     void putCard(Card card);
-    int  drawCard(Deck& deck, char player_type, Player& dealer);
-    [[nodiscard]] int  score() const;
-    [[nodiscard]] bool isBust() const;
+    int  drawCard(Deck& deck, Player& dealer);
+    [[nodiscard]]
+    int  getScore() const;
+    [[nodiscard]]
+    bool isBust() const;
     void printDeck() const;
 
 
@@ -100,7 +104,7 @@ void ignoreLine();
 bool playerWantsHit();
 bool aceChoice(const Player& player);
 bool limitDealerAce(const Player& dealer);
-bool playerTurn(Deck& deck, Player& player);
+bool userTurn(Deck& deck, Player& player);
 bool dealerTurn(Deck& deck, Player& dealer);
 int  playGame(Deck& deck);
 void executeGame();

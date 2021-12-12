@@ -33,9 +33,10 @@ bool playerWantsHit()
 }
 
 //Add value 1 or 11 according to respective choices when ace gets selected
-bool aceChoice(const Player& player)
+//unless player's score is greater than 40
+bool aceChoice(const Player& user)
 {
-    if (player.score() <= g_limit_ace)
+    if (user.getScore() <= g_limit_ace)
     {
         while(true)
         {
@@ -67,38 +68,41 @@ bool aceChoice(const Player& player)
 
 }
 
+//To stop the dealer from choosing 11 value of Ace
+//when their score exceeds 40
 bool limitDealerAce(const Player& dealer)
 {
-    return(dealer.score() > g_limit_ace);
+    return(dealer.getScore() > g_limit_ace);
 }
 
-bool playerTurn(Deck& deck, Player& player)
+//Let the player pick cards unless he/she stands or busted
+bool userTurn(Deck& deck, Player& user)
 {
     while (true)
     {
-        if(player.isBust())
+        if(user.isBust())
         {
             std::cout << "You're busted ! \n";
             std::cout << "Your deck: ";
-            player.printDeck();
+            user.printDeck();
             return true; //Player busted
         }
         else
         {
             if (playerWantsHit())
             {
-                int playerCardValue{ player.drawCard(deck, g_player, player) };
+                int userCardValue{ user.drawCard(deck, user) };
 
                 std::cout << '\n';
 
-                std::cout << "You were dealt a " << playerCardValue << '\n';
-                std::cout << "Current score: " << player.score() << "\n\n";
+                std::cout << "You were dealt a " << userCardValue << '\n';
+                std::cout << "Current score: " << user.getScore() << "\n\n";
             }
 
             else
             {
                 std::cout << "Your deck: ";
-                player.printDeck();
+                user.printDeck();
 
                 return false; //Player wasn't busted
             }
@@ -106,16 +110,17 @@ bool playerTurn(Deck& deck, Player& player)
     }
 }
 
+//Dealer picks cards from the deck unless busted or stopped
 bool dealerTurn(Deck& deck, Player& dealer)
 {
 
-    while (dealer.score() < g_minScore)
+    while (dealer.getScore() < g_minScore)
     {
         sleep(4);
-        int dealerCardValue{ dealer.drawCard(deck, g_dealer, dealer) };
+        int dealerCardValue{ dealer.drawCard(deck, dealer) };
         std::cout << '\n';
         std::cout << "Dealer was dealt a " << dealerCardValue << '\n';
-        std::cout << "Dealer's current score: " << dealer.score() << "\n\n";
+        std::cout << "Dealer's current score: " << dealer.getScore() << "\n\n";
     }
 
     if(dealer.isBust())
@@ -135,16 +140,18 @@ bool dealerTurn(Deck& deck, Player& dealer)
 
 }
 
+//Initialise player & dealer and start playing
 int playGame(Deck& deck)
 {
 
     std::cout << "\n============= Your Turn =============\n\n";
-    Player player{};
+    Player user{};
+    user.setType(g_user);
 
-    bool player_turn{playerTurn(deck, player)};
-    std::cout << "Your final score: " << player.score() << "\n\n";
+    bool user_turn{userTurn(deck, user)};
+    std::cout << "Your final score: " << user.getScore() << "\n\n";
 
-    if (player_turn)
+    if (user_turn)
     {
         return 0;
     }
@@ -153,27 +160,29 @@ int playGame(Deck& deck)
 
     std::cout << "\n=========== Dealer's Turn ===========\n\n";
     Player dealer{};
+    dealer.setType(g_dealer);
 
     bool dealer_turn{dealerTurn(deck, dealer)};
-    std::cout << "Dealer's final score: " << dealer.score() << "\n\n";
+    std::cout << "Dealer's final score: " << dealer.getScore() << "\n\n";
 
     if (dealer_turn)
     {
         return 1;
     }
 
-    if(player.score() > dealer.score())
+    if(user.getScore() > dealer.getScore())
         return 1;
 
-    if(player.score() < dealer.score())
+    if(user.getScore() < dealer.getScore())
         return 0;
 
-    if(player.score() == dealer.score())
+    if(user.getScore() == dealer.getScore())
         return 2;
 
     return 3;
 }
 
+//Execute playGame function to know who wins, losses or ties
 void executeGame()
 {
     Deck deck{};
