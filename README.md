@@ -1,3 +1,4 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/bose-aritra2003/cui-blackjack/badge/master)](https://www.codefactor.io/repository/github/bose-aritra2003/cui-blackjack/overview/master)
 # CUI-Blackjack
 A simplified command line interface Blackjack cards game.
 
