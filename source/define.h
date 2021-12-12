@@ -85,8 +85,6 @@ public:
     [[nodiscard]]
     bool isBust() const;
     void printDeck() const;
-
-
 };
 
 //Forward declarations
