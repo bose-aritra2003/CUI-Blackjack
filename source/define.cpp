@@ -20,9 +20,7 @@ void Card::printCode() const {
         case rank_king :   std::cout << 'K';   break;
         case rank_ace  :   std::cout << 'A';   break;
 
-        default:
-            std::cout << '?';
-            break;
+        default        :   std::cout << '?';   break;
     }
 
     switch(m_suit) {
@@ -31,9 +29,7 @@ void Card::printCode() const {
         case suit_hearts   :   std::cout << 'H';   break;
         case suit_spades   :   std::cout << 'S';   break;
 
-        default:
-            std::cout << '?';
-            break;
+        default            :   std::cout << '?';   break;
     }
 }
 
@@ -55,7 +51,7 @@ int Card::getValue() const {
         case rank_king :   return 10;
         case rank_ace  :   return 11;
 
-        default   :   assert(false && "\nThis should never happen\n");
+        default        :   assert(false && "\nThis should never happen\n");
     }
 }
 
@@ -76,7 +72,6 @@ Deck::Deck() {
 void Deck::shuffle() {
     //seed is static so it only gets seeded once.
     static std::mt19937 seed{static_cast<std::mt19937::result_type>(std::time(nullptr))};
-
     std::shuffle(m_deck.begin(), m_deck.end(), seed);
     std::cout << "\n======= Deck has been shuffled ======\n";
 }
@@ -84,7 +79,6 @@ void Deck::shuffle() {
 //To deal a card to the player (not its value)
 const Card& Deck::dealCard() {
     assert(m_cardIndex < m_deck.size());
-
     return m_deck[m_cardIndex++];
 }
 
