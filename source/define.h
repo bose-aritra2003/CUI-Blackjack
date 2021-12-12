@@ -14,7 +14,6 @@
 #include <cassert>
 #include <iostream>
 
-
 //All the necessary class definitions and type aliases
 
 constexpr int g_ace_1{1};
@@ -26,19 +25,15 @@ constexpr int g_minScore{46};
 
 class Player;
 
-class Card
-{
+class Card {
 public:
-
-    enum Suit
-    {
+    enum Suit {
         suit_clubs, suit_diamonds, suit_hearts, suit_spades,
 
         max_suits
     };
 
-    enum Rank
-    {
+    enum Rank {
         rank_two, rank_three, rank_four, rank_five, rank_six, rank_seven, rank_eight,
         rank_nine, rank_ten, rank_jack, rank_queen, rank_king, rank_ace,
 
@@ -52,14 +47,12 @@ private:
 public:
     Card() = default;
     Card(Rank rank, Suit suit);
-
     void printCode() const;
     [[nodiscard]]
     int getValue() const;
 };
 
-class Deck
-{
+class Deck {
 public:
     using deck_t = std::array<Card, 52>;
     using index_t = deck_t::size_type;
@@ -75,8 +68,7 @@ public:
 };
 
 
-class Player
-{
+class Player {
 private:
     int m_score{};
     char m_type{};

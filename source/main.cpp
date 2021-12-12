@@ -1,10 +1,8 @@
 #include "define.h"
 
 //Whether user wants to play again or not
-bool getChoicePlayAgain()
-{
-    while (true)
-    {
+bool getChoicePlayAgain() {
+    while (true) {
         std::cout << "Do you want to play again (y / n): ";
         char choice{};
         std::cin >> choice;
@@ -22,17 +20,14 @@ bool getChoicePlayAgain()
 }
 
 //Ask the user whether to start the game or not
-bool getChoiceStartGame()
-{
-    while (true)
-    {
+bool getChoiceStartGame() {
+    while (true) {
         ignoreLine();
         std::cout << "Do you want to start the game (y / n): ";
         char choice{};
         std::cin >> choice;
 
-        switch (choice)
-        {
+        switch (choice) {
             case 'y':
                 return true;
             case 'n':
@@ -45,8 +40,7 @@ bool getChoiceStartGame()
 }
 
 //To display the welcome note, developer info, rules of the game & reference legend
-void displayRules()
-{
+void displayRules() {
     std::cout << "\n===== Welcome to BLACKJACK-CUI =====\n"
                  "\nProject by Aritra Bose,\n"
                  "Undergraduate Information Technology student,\n"
@@ -74,23 +68,20 @@ void displayRules()
 }
 
 //Ask the user to press enter key to continue
-void askEnter()
-{
+void askEnter() {
     std::cout << "\nPress ENTER key to continue...";
     std::cin.get();
 }
 
 //MAIN
-int main()
-{
+int main() {
     displayRules();
 
     askEnter();
 
     if(getChoiceStartGame())
         goto start_here;
-    else
-    {
+    else {
         std::cout << "\n===== Thank you, see you again! =====\n ";
         return 0;
     }
