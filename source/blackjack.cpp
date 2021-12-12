@@ -53,11 +53,8 @@ bool aceChoice(const Player& user) {
                     ignoreLine();
             }
         }
-    }
-
-    else
+    } else
         return true;
-
 }
 
 //To stop the dealer from choosing 11 value of Ace
@@ -115,16 +112,13 @@ bool dealerTurn(Deck& deck, Player& dealer) {
         dealer.printDeck();
         return false;
     }
-
 }
 
 //Initialise player & dealer and start playing
 int playGame(Deck& deck) {
-
     std::cout << "\n============= Your Turn =============\n\n";
     Player user{};
     user.setType(g_user);
-
     bool user_turn{userTurn(deck, user)};
     std::cout << "Your final score: " << user.getScore() << "\n\n";
 
@@ -137,7 +131,6 @@ int playGame(Deck& deck) {
     std::cout << "\n=========== Dealer's Turn ===========\n\n";
     Player dealer{};
     dealer.setType(g_dealer);
-
     bool dealer_turn{dealerTurn(deck, dealer)};
     std::cout << "Dealer's final score: " << dealer.getScore() << "\n\n";
 
@@ -147,10 +140,8 @@ int playGame(Deck& deck) {
 
     if(user.getScore() > dealer.getScore())
         return 1;
-
     if(user.getScore() < dealer.getScore())
         return 0;
-
     if(user.getScore() == dealer.getScore())
         return 2;
 
